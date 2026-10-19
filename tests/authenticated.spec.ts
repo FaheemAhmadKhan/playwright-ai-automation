@@ -26,20 +26,34 @@ test('authenticated dashboard shows the new shop and empty account totals', asyn
   await expect(page.getByText(/Owed to you|لوگوں پہ ادھار/).locator('..')).toContainText('Rs 0');
 });
 
-test('authenticated stock page shows the empty stock state', async ({ page }) => {
+test('authenticated stock page shows the seeded test item', async ({ page }) => {
   await logIn(page);
   await page.goto('/app/maal');
 
   await expect(page.getByRole('heading', { name: /Stock list|مال کی لسٹ/ })).toBeVisible();
-  await expect(page.getByText(/No items yet|ابھی کوئی مال درج نہیں/)).toBeVisible();
   await expect(page.getByRole('link', { name: /Add an item|نیا مال درج کریں/ })).toBeVisible();
+  await expect(page.getByRole('link', { name: /AI Test Rice/ })).toContainText('Rs 70');
 });
 
-test('sale page guides a new shop to add stock first', async ({ page }) => {
+test('sale page lists the seeded test item', async ({ page }) => {
   await logIn(page);
   await page.goto('/app/bikri');
 
   await expect(page.getByRole('heading', { name: /Sale|بکری/ })).toBeVisible();
-  await expect(page.getByText(/To sell, first add items to the stock list|بکری کے لیے پہلے مال کی لسٹ میں چیزیں درج کریں/)).toBeVisible();
-  await expect(page.getByRole('link', { name: /Add items|مال درج کریں/ })).toHaveAttribute('href', '/app/maal/new');
+  await expect(page.getByRole('button', { name: /AI Test Rice Rs 70/ })).toBeVisible();
+});
+
+test('stock item can be selected into a draft bill without completing a sale', async ({ page }) => {
+  await logIn(page);
+  await page.goto('/app/maal');
+
+  await expect(page.getByRole('link', { name: /AI Test Rice/ })).toBeVisible();
+  await page.goto('/app/bikri');
+  await page.getByRole('button', { name: /AI Test Rice Rs 70/ }).click();
+  await page.getByRole('link', { name: /1 items Rs 70 See the bill|1 چیزیں Rs 70 بل دیکھیں/ }).click();
+
+  await expect(page.getByRole('heading', { name: /Bill|بل/ })).toBeVisible();
+  await expect(page.getByRole('textbox', { name: /Quantity of AI Test Rice|AI Test Rice کی مقدار/ })).toHaveValue('1');
+  await expect(page.getByText('Rs 70').last()).toBeVisible();
+  await expect(page.getByRole('button', { name: /Complete sale|بکری مکمل کریں/ })).toBeVisible();
 });

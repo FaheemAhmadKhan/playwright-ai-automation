@@ -7,10 +7,10 @@
 
 ## Result
 
-**7 passed, 0 failed**
+**8 passed, 0 failed**
 
 The public suite completed successfully in approximately 5.6 seconds. The
-authenticated suite completed successfully in approximately 11.8 seconds.
+authenticated suite completed successfully in approximately 18.0 seconds.
 Both runs used one Chromium worker.
 
 ## Coverage completed
@@ -23,7 +23,8 @@ Both runs used one Chromium worker.
 | SM-004 | Shop-registration route is reachable and does not return a 404 page | Passed |
 | AUTH-001 | Authenticated dashboard shows the new shop and zero initial totals | Passed |
 | AUTH-002 | Empty stock screen shows the add-item action | Passed |
-| AUTH-003 | Empty sale screen directs a new shop to add stock first | Passed |
+| AUTH-003 | Seeded stock item appears in the sale flow | Passed |
+| AUTH-004 | Seeded item can be added to a draft bill without completing the sale | Passed |
 
 ## Not covered yet
 
@@ -40,6 +41,18 @@ be automated:
 - Urdu/English content verification across authenticated screens
 - Mobile viewport and responsive layout checks
 - Session expiry, refresh, and unauthorized-route behavior
+
+## Synthetic data created
+
+- Item: `AI Test Rice`
+- Quantity: 10 pieces
+- Cost price: Rs 50 per piece
+- Selling price: Rs 70 per piece
+- Low-stock warning: 2 pieces
+- Online shop visibility: Off
+
+No sale was completed. The item was selected into a draft bill and the bill
+screen was verified, but the completion action was intentionally not clicked.
 
 ## Test account
 
