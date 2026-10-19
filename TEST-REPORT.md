@@ -7,7 +7,7 @@
 
 ## Result
 
-**8 passed, 0 failed**
+**9 passed, 0 failed**
 
 The public suite completed successfully in approximately 5.6 seconds. The
 authenticated suite completed successfully in approximately 18.0 seconds.
@@ -25,6 +25,7 @@ Both runs used one Chromium worker.
 | AUTH-002 | Empty stock screen shows the add-item action | Passed |
 | AUTH-003 | Seeded stock item appears in the sale flow | Passed |
 | AUTH-004 | Seeded item can be added to a draft bill without completing the sale | Passed |
+| AUTH-005 | Completed cash sale updates stock and dashboard totals | Passed |
 
 ## Not covered yet
 
@@ -52,7 +53,16 @@ be automated:
 - Online shop visibility: Off
 
 No sale was completed. The item was selected into a draft bill and the bill
-screen was verified, but the completion action was intentionally not clicked.
+screen was verified before the controlled cash-sale test was completed.
+
+## Controlled transaction created
+
+- Payment type: Cash
+- Sale total: Rs 70
+- Stock before sale: 10 pieces
+- Stock after sale: 9 pieces
+- Dashboard cash after sale: Rs 70
+- Customer credit after sale: Rs 0
 
 ## Test account
 

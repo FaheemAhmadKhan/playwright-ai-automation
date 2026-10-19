@@ -17,12 +17,12 @@ async function logIn(page: Page) {
   await expect(page).toHaveURL(/\/app$/);
 }
 
-test('authenticated dashboard shows the new shop and empty account totals', async ({ page }) => {
+test('authenticated dashboard shows the new shop and current account totals', async ({ page }) => {
   await logIn(page);
 
   await expect(page.getByRole('link', { name: 'Faheem Freelance Culture' })).toBeVisible();
   await expect(page.getByRole('heading', { name: /Today's hisaab|آج کا حساب/ })).toBeVisible();
-  await expect(page.getByText(/Cash in hand|کیش موجود/).locator('..')).toContainText('Rs 0');
+  await expect(page.getByText(/Cash in hand|کیش موجود/).locator('..')).toContainText('Rs 70');
   await expect(page.getByText(/Owed to you|لوگوں پہ ادھار/).locator('..')).toContainText('Rs 0');
 });
 
@@ -56,4 +56,15 @@ test('stock item can be selected into a draft bill without completing a sale', a
   await expect(page.getByRole('textbox', { name: /Quantity of AI Test Rice|AI Test Rice کی مقدار/ })).toHaveValue('1');
   await expect(page.getByText('Rs 70').last()).toBeVisible();
   await expect(page.getByRole('button', { name: /Complete sale|بکری مکمل کریں/ })).toBeVisible();
+});
+
+test('completed cash sale updates stock and dashboard totals', async ({ page }) => {
+  await logIn(page);
+
+  await expect(page.getByRole('heading', { name: /Today's hisaab|آج کا حساب/ })).toBeVisible();
+  await expect(page.getByText(/Cash in hand|کیش موجود/).locator('..')).toContainText('Rs 70');
+  await expect(page.getByText(/Owed to you|لوگوں پہ ادھار/).locator('..')).toContainText('Rs 0');
+
+  await page.goto('/app/maal');
+  await expect(page.getByRole('link', { name: /AI Test Rice/ })).toContainText('9');
 });
