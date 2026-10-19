@@ -21,6 +21,15 @@ npm run test:ui
 npm run report
 ```
 
+Authenticated tests require runtime-only environment variables and do not
+store credentials in the repository:
+
+```powershell
+$env:KIRYANA_TEST_MOBILE = '<test mobile number>'
+$env:KIRYANA_TEST_PIN = '<test PIN>'
+npx playwright test authenticated.spec.ts
+```
+
 ## Suggested AI-assisted workflow
 
 1. Describe the user journey and expected outcome.

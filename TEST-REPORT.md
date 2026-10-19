@@ -3,14 +3,15 @@
 **Application:** https://kiryana-pos-crk.pages.dev  
 **Test date:** 2026-10-19  
 **Environment:** Chromium, Playwright Test  
-**Suite:** Public smoke tests  
+**Suite:** Public and authenticated smoke tests  
 
 ## Result
 
-**4 passed, 0 failed**
+**7 passed, 0 failed**
 
-The suite completed successfully in approximately 5.6 seconds using one
-Chromium worker.
+The public suite completed successfully in approximately 5.6 seconds. The
+authenticated suite completed successfully in approximately 11.8 seconds.
+Both runs used one Chromium worker.
 
 ## Coverage completed
 
@@ -20,6 +21,9 @@ Chromium worker.
 | SM-002 | Landing page exposes the English/Urdu language switcher | Passed |
 | SM-003 | Login route is reachable and does not return a 404 page | Passed |
 | SM-004 | Shop-registration route is reachable and does not return a 404 page | Passed |
+| AUTH-001 | Authenticated dashboard shows the new shop and zero initial totals | Passed |
+| AUTH-002 | Empty stock screen shows the add-item action | Passed |
+| AUTH-003 | Empty sale screen directs a new shop to add stock first | Passed |
 
 ## Not covered yet
 
@@ -36,6 +40,13 @@ be automated:
 - Urdu/English content verification across authenticated screens
 - Mobile viewport and responsive layout checks
 - Session expiry, refresh, and unauthorized-route behavior
+
+## Test account
+
+A dedicated test shop was created with the approved test details. The phone
+number and PIN were supplied only at runtime and were not written to a file,
+committed, or pushed to GitHub. Authenticated tests read credentials from
+`KIRYANA_TEST_MOBILE` and `KIRYANA_TEST_PIN` environment variables.
 
 ## Recommendations
 
