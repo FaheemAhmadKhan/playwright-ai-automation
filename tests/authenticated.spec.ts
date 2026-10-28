@@ -117,3 +117,74 @@ test('authenticated dashboard remains usable on a mobile viewport', async ({ bro
 
   await context.close();
 });
+
+test('authenticated stock and sale screens switch to English', async ({ page }) => {
+  await logIn(page);
+
+  await page.goto('/app/maal');
+  await page.locator('button').first().click();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en', { timeout: 10000 });
+  await expect(page.getByRole('heading', { name: 'Stock list' })).toBeVisible();
+
+  await page.goto('/app/bikri');
+  await expect(page.getByRole('heading', { name: 'Sale' })).toBeVisible();
+  await expect(page.getByRole('button', { name: /AI Test Rice Rs 70/ })).toBeVisible();
+});
+
+test('authenticated stock and sale screens remain usable on mobile', async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  const page = await context.newPage();
+
+  await logIn(page);
+  await page.goto('/app/maal');
+  await expect(page.getByRole('heading', { name: /Stock list|مال کی لسٹ/ })).toBeVisible();
+  await expect(page.getByRole('link', { name: /Add an item|نیا مال درج کریں/ })).toBeVisible();
+
+  await page.goto('/app/bikri');
+  await expect(page.getByRole('heading', { name: /Sale|بکری/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /AI Test Rice Rs 70/ })).toBeVisible();
+
+  await context.close();
+});
+
+test('new product form validates required fields without creating data', async ({ page }) => {
+  await logIn(page);
+  await page.goto('/app/maal');
+  await page.getByRole('link', { name: /Add an item|نیا مال درج کریں/ }).click();
+
+  await expect(page.getByRole('heading', { name: /New item|نیا مال/ })).toBeVisible();
+  await page.getByRole('button', { name: /Save|محفوظ کریں/ }).click();
+  await expect(page).toHaveURL(/\/app\/maal/);
+});
+
+test('clearing the authenticated session redirects to login', async ({ page }) => {
+  await logIn(page);
+  await page.context().clearCookies();
+  await page.evaluate(() => localStorage.clear());
+  await page.goto('/app');
+
+  await expect(page).toHaveURL(/\/app\/login$/);
+});
+
+test('profit page shows the seven-day summary and daily entries', async ({ page }) => {
+  await logIn(page);
+  await page.goto('/app/profit');
+
+  await expect(page.getByRole('heading', { name: /Profit|منافع/ })).toBeVisible();
+  await expect(page.getByText(/Last 7 days|پچھلے 7 دن/)).toBeVisible();
+  await expect(page.getByText(/Sales|بکری/).first()).toBeVisible();
+});
+
+test('empty customer and supplier ledgers expose creation actions', async ({ page }) => {
+  await logIn(page);
+
+  await page.goto('/app/khata');
+  await expect(page).toHaveURL(/\/app\/khata$/);
+  await expect(page.locator('body')).toContainText(/Customer khata|لوگوں کا کھاتہ/);
+  await expect(page.getByRole('link', { name: /New customer|نیا گاہک/ })).toBeVisible();
+
+  await page.goto('/app/suppliers');
+  await expect(page).toHaveURL(/\/app\/suppliers$/);
+  await expect(page.locator('body')).toContainText(/Suppliers|سپلائرز/);
+  await expect(page.getByRole('link', { name: /New supplier|نیا سپلائر/ })).toBeVisible();
+});

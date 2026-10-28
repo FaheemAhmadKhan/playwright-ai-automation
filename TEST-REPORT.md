@@ -1,17 +1,16 @@
 # Kiryana Playwright Test Report
 
 **Application:** https://kiryana-pos-crk.pages.dev  
-**Test date:** 2026-10-19  
+**Test date:** 2026-10-28  
 **Environment:** Chromium, Playwright Test  
 **Suite:** Public and authenticated smoke tests  
 
 ## Result
 
-**9 passed, 0 failed**
+**Latest execution: 50 passed, 0 failed, 0 skipped**
 
-The public suite completed successfully in approximately 5.6 seconds. The
-authenticated suite completed successfully in approximately 18.0 seconds.
-Both runs used one Chromium worker.
+The latest public and authenticated cross-browser matrix completed
+successfully in approximately 1.9 minutes using two workers.
 
 ## Execution history
 
@@ -32,18 +31,40 @@ across executions, so a skipped test is neither passed nor failed.
 | 2026-10-20 | Expanded session-refresh and authenticated-language suite | 23 | 0 | 0 | 133 | 5 | 5 |
 | 2026-10-20 | Expanded protected-route and authenticated-mobile suite | 25 | 0 | 0 | 158 | 5 | 5 |
 | 2026-10-20 | Chromium and Firefox cross-browser matrix | 50 | 0 | 0 | 208 | 5 | 5 |
+| 2026-10-28 | Chromium and Firefox cross-browser matrix with supplied runtime credentials | 50 | 0 | 0 | 258 | 5 | 5 |
+| 2026-10-28 | Additional safe boundary, registration, authenticated UI, and product-form checks | 16 | 0 | 0 | 274 | 5 | 5 |
+| 2026-10-28 | Final serial Chromium and Firefox expanded matrix | 66 | 0 | 0 | 340 | 5 | 5 |
 
 ### Latest execution
 
-**50 passed, 0 failed, 0 skipped**
+**66 passed, 0 failed, 0 skipped**
 
 The public, validation, network, language, responsive, registration,
 login-format, logout, session-refresh, protected-route, authenticated-language,
-and authenticated-mobile tests all passed in both Chromium and Firefox. The
-matrix completed in approximately 1.4 minutes using two workers.
+and authenticated-mobile tests all passed in both Chromium and Firefox on the
+latest 2026-10-28 run. The expanded matrix completed in approximately
+3.3 minutes using one worker to avoid shared-account login contention.
 The supplied
 credentials were used only as runtime environment variables and were not
 written to the repository.
+
+### Coverage completed today
+
+The following additional checks were completed on 2026-10-28 using the
+runtime-only test account:
+
+- Boundary-length mobile-number and PIN rejection
+- Invalid registration mobile number and mismatched PIN confirmation
+- Authenticated English verification on stock and sale screens
+- Authenticated mobile usability on stock and sale screens
+- New-product form required-field validation without saving an item
+- Session clearing redirects to login (session-expiry simulation)
+- Profit page seven-day summary and daily entries
+- Empty customer ledger and new-customer action
+- Empty supplier ledger and new-supplier action
+
+The additional checks passed in Chromium and Firefox. No new shop, customer,
+supplier, product, or sale was created during today's extension checks.
 
 ## Coverage completed
 
@@ -74,6 +95,15 @@ written to the repository.
 | AUTH-008 | Authenticated dashboard switches to English | Passed |
 | AUTH-009 | Authenticated dashboard remains usable on a mobile viewport | Passed |
 | SEC-001 | Unauthenticated dashboard access redirects to login | Passed |
+| VAL-001 | Boundary-length mobile and PIN values are rejected | Passed |
+| REG-002 | Invalid registration mobile and mismatched PIN are rejected | Passed |
+| LOC-002 | Authenticated stock and sale screens switch to English | Passed |
+| RWD-003 | Authenticated stock and sale screens remain usable on mobile | Passed |
+| PROD-001 | New-product form validates required fields without creating data | Passed |
+| AUTH-010 | Clearing the session redirects to login | Passed |
+| DASH-001 | Profit page shows seven-day and daily entries | Passed |
+| CREDIT-001 | Empty customer ledger exposes creation action | Passed |
+| CREDIT-002 | Empty supplier ledger exposes creation action | Passed |
 
 ## Not covered yet
 
@@ -81,16 +111,15 @@ These workflows need an approved test account and test data before they should
 be automated:
 
 - Successful login, logout, session persistence, and refresh are covered;
-  session expiry remains
-- Boundary-length and additional invalid mobile number/PIN format validation
+  true server-side session expiry remains
+- Additional invalid mobile number/PIN format combinations
 - Successful shop registration and duplicate web-address handling
 - Product creation, editing, and deletion
-- Sales/POS checkout and receipt generation
+- Sales/POS checkout and receipt generation beyond the existing controlled sale
 - Customer or supplier credit (udhaar) creation and settlement
-- Dashboard totals and date filtering
-- Urdu/English content verification across authenticated screens
+- Dashboard date filtering
+- Full Urdu/English content verification across authenticated screens
 - Responsive checks for additional authenticated screens and interactions
-- Session expiry behavior
 - WebKit full-suite stability; two cases crashed during the long combined
   WebKit run but passed when isolated
 

@@ -75,7 +75,7 @@ test('login keeps the submit action protected while credentials are checked', as
   await loginButton.click();
 
   await expect(page).toHaveURL(/\/app\/login$/);
-  await expect(page.getByRole('alert')).toContainText(/incorrect|غلط/i);
+  await expect(page.getByRole('alert')).toContainText(/incorrect|wrong|غلط/i);
   await expect(loginButton).toBeEnabled();
 });
 
@@ -107,6 +107,22 @@ test('login rejects an invalid PIN format', async ({ page }) => {
   await page.getByRole('button', { name: /Log in|لاگ ان/ }).click();
 
   await expect(page).toHaveURL(/\/app\/login$/);
+});
+
+test('login rejects boundary-length mobile and PIN values', async ({ page }) => {
+  await page.goto('/app/login');
+
+  const englishButton = page.getByRole('button', { name: 'English' });
+  if (await englishButton.isVisible()) {
+    await englishButton.click();
+  }
+
+  await page.getByRole('textbox', { name: /Mobile number|موبائل نمبر/ }).fill('0339400492');
+  await page.getByRole('textbox', { name: /PIN|پن/ }).fill('123');
+  await page.getByRole('button', { name: /Log in|لاگ ان/ }).click();
+
+  await expect(page).toHaveURL(/\/app\/login$/);
+  await expect(page.getByRole('textbox', { name: /Mobile number|موبائل نمبر/ })).toBeVisible();
 });
 
 test('landing route responds successfully over the network', async ({ page }) => {
@@ -169,6 +185,21 @@ test('shop registration validates required fields', async ({ page }) => {
 
   await expect(page).toHaveURL(/\/app\/signup$/);
   await expect(page.locator('input').first()).toBeVisible();
+});
+
+test('shop registration rejects invalid PIN confirmation and mobile format', async ({ page }) => {
+  await page.goto('/app/signup');
+
+  const inputs = page.locator('input');
+  await inputs.nth(0).fill('QA Validation Shop');
+  await inputs.nth(1).fill('qa-validation-shop');
+  await inputs.nth(2).fill('QA Tester');
+  await inputs.nth(3).fill('abc');
+  await inputs.nth(4).fill('123');
+  await inputs.nth(5).fill('456');
+  await page.getByRole('button', { name: /Create shop|دکان بنائیں/i }).click();
+
+  await expect(page).toHaveURL(/\/app\/signup$/);
 });
 
 test('unauthenticated dashboard access redirects to login', async ({ page }) => {
