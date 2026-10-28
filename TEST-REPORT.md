@@ -34,10 +34,13 @@ across executions, so a skipped test is neither passed nor failed.
 | 2026-10-28 | Chromium and Firefox cross-browser matrix with supplied runtime credentials | 50 | 0 | 0 | 258 | 5 | 5 |
 | 2026-10-28 | Additional safe boundary, registration, authenticated UI, and product-form checks | 16 | 0 | 0 | 274 | 5 | 5 |
 | 2026-10-28 | Final serial Chromium and Firefox expanded matrix | 66 | 0 | 0 | 340 | 5 | 5 |
+| 2026-10-28 | Storage-state Chromium and WebKit investigation suites | 34 | 3 | 0 | 374 | 8 | 5 |
+| 2026-10-28 | Final storage-state Chromium and Firefox expanded matrix | 71 | 0 | 0 | 445 | 8 | 5 |
 
 ### Latest execution
 
-**66 passed, 0 failed, 0 skipped**
+**71 passed, 0 failed, 0 skipped** in the latest Chromium and Firefox
+storage-state run.
 
 The public, validation, network, language, responsive, registration,
 login-format, logout, session-refresh, protected-route, authenticated-language,
@@ -47,6 +50,13 @@ latest 2026-10-28 run. The expanded matrix completed in approximately
 The supplied
 credentials were used only as runtime environment variables and were not
 written to the repository.
+
+The storage-state setup now authenticates once per browser project and reuses
+the state for authenticated tests. The final Chromium and Firefox matrix
+passed 71/71 with this setup.
+WebKit passed 31/34 in the investigation run; three cases experienced
+WebKit/page-process crashes. The PIN-format and mobile-login cases passed when
+isolated. The profit-page case reproduced a WebKit out-of-memory crash.
 
 ### Coverage completed today
 
@@ -58,6 +68,8 @@ runtime-only test account:
 - Authenticated English verification on stock and sale screens
 - Authenticated mobile usability on stock and sale screens
 - New-product form required-field validation without saving an item
+- Product create, edit, and delete with cleanup
+- Customer and supplier required-name validation without creating records
 - Session clearing redirects to login (session-expiry simulation)
 - Profit page seven-day summary and daily entries
 - Empty customer ledger and new-customer action
@@ -114,14 +126,20 @@ be automated:
   true server-side session expiry remains
 - Additional invalid mobile number/PIN format combinations
 - Successful shop registration and duplicate web-address handling
-- Product creation, editing, and deletion
+- Product creation, editing, and deletion are now covered with cleanup
 - Sales/POS checkout and receipt generation beyond the existing controlled sale
 - Customer or supplier credit (udhaar) creation and settlement
-- Dashboard date filtering
+- Dashboard date filtering; no date-filter control is exposed in the current
+  profit/dashboard UI
 - Full Urdu/English content verification across authenticated screens
 - Responsive checks for additional authenticated screens and interactions
-- WebKit full-suite stability; two cases crashed during the long combined
-  WebKit run but passed when isolated
+- WebKit full-suite stability; 31/34 passed in the latest investigation,
+  with an authenticated profit-page out-of-memory crash and two page/context
+  crashes in public login cases
+- True server-side session expiry; client-side session clearing is covered,
+  but forcing backend token expiry requires server or test-fixture control
+- Successful registration and credit settlement remain intentionally unrun
+  because they create persistent live records without a reset API
 
 ## Synthetic data created
 
