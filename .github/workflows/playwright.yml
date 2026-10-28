@@ -1,0 +1,37 @@
+name: Playwright tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    env:
+      KIRYANA_TEST_MOBILE: ${{ secrets.KIRYANA_TEST_MOBILE }}
+      KIRYANA_TEST_PIN: ${{ secrets.KIRYANA_TEST_PIN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium firefox webkit
+      - run: npx playwright test --project=chromium --project=firefox --workers=1
+        env:
+          CI: true
+      - name: Run WebKit investigation suite
+        continue-on-error: true
+        run: npx playwright test --project=webkit --workers=1
+        env:
+          CI: true
+      - name: Upload Playwright reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
